@@ -34,7 +34,23 @@ const AppState = {
 };
 
 // DOM элементы
+
 const DOM = {};
+// БЫСТРАЯ ИНИЦИАЛИЗАЦИЯ - УПРОЩЕННЫЙ РЕЖИМ
+const fastMode = localStorage.getItem('fastMode') || 
+                 window.location.search.includes('fast') ||
+                 navigator.connection?.saveData;
+
+if (fastMode) {
+    console.log('🌀 Быстрый режим активирован');
+    // Отключаем тяжёлые эффекты
+    window.FAST_MODE = {
+        shaders: false,
+        particles: 10,
+        audio: false,
+        complexAnimations: false
+    };
+}
 
 // Инициализация при загрузке
 document.addEventListener('DOMContentLoaded', async () => {
@@ -197,13 +213,27 @@ async function initAudio() {
 
 // Инициализация эффектов
 async function initEffects() {
-    window.shaderEffects = new ShaderEffects({
-        canvas: document.getElementById('shaderCanvas'),
-        particleCanvas: document.getElementById('particleCanvas'),
-        settings: AppState.settings
-    });
-    
-    await window.shaderEffects.init();
+    if (AppState.settings.effectsEnabled && window.ShaderEffects) {
+        window.shaderEffects = new ShaderEffects({
+            canvas: document.getElementById('shaderCanvas'),
+            particleCanvas: document.getElementById('particleCanvas'),
+            settings: AppState.settings
+        });
+        
+        await window.shaderEffects.init();
+        
+        // Запускаем эффекты только если инициализация успешна
+        if (window.shaderEffects.settings.enabled) {
+            window.shaderEffects.start();
+            window.shaderEffects.startParticles();
+        }
+    } else {
+        // Скрываем канвасы если эффекты отключены
+        const shaderCanvas = document.getElementById('shaderCanvas');
+        const particleCanvas = document.getElementById('particleCanvas');
+        if (shaderCanvas) shaderCanvas.style.display = 'none';
+        if (particleCanvas) particleCanvas.style.display = 'none';
+    }
 }
 
 // Инициализация UI
@@ -298,6 +328,13 @@ function setupEventListeners() {
     
     // Автосохранение каждые 30 секунд
     setInterval(saveState, 30000);
+
+    // В функции setupEventListeners добавьте:
+    document.addEventListener('mousemove', (e) => {
+    if (window.shaderEffects && window.shaderEffects.settings.enabled) {
+        window.shaderEffects.updateMousePosition(e.clientX, e.clientY);
+    }
+});
 }
 
 // Взаимодействие с точкой

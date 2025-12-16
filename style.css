@@ -1,6 +1,7 @@
 /* ============================================
    МЕТАМОРФОЗЫ - ОСНОВНЫЕ СТИЛИ
    Психоделическое измерение
+   Версия с оптимизациями для быстрой загрузки
    ============================================ */
 
 /* 1. СБРОС И БАЗОВЫЕ СТИЛИ */
@@ -64,6 +65,25 @@ body {
     to { opacity: 1; }
 }
 
+/* === ОПТИМИЗАЦИЯ: Быстрая загрузка === */
+html.fast-load #shaderCanvas,
+html.fast-load #particleCanvas {
+    display: none !important;
+}
+
+html.fast-load .manifesto-title::after {
+    animation: none;
+}
+
+html.fast-load .point-aura {
+    animation: none;
+}
+
+html.fast-load .loading-spinner {
+    animation-duration: 0.5s;
+}
+/* === КОНЕЦ ОПТИМИЗАЦИИ === */
+
 /* 3. КАНВАСЫ ДЛЯ ЭФФЕКТОВ */
 #shaderCanvas,
 #particleCanvas {
@@ -81,7 +101,7 @@ body {
     mix-blend-mode: screen;
 }
 
-/* 4. ЭКРАН ЗАГРУЗКИ */
+/* 4. ЭКРАН ЗАГРУЗКИ - ОБНОВЛЁННЫЙ С ПРОГРЕССОМ */
 .loading-screen {
     position: fixed;
     top: 0;
@@ -127,6 +147,33 @@ body {
     letter-spacing: 2px;
 }
 
+/* === НОВОЕ: Шаги загрузки === */
+.loading-steps {
+    margin: 1.5rem 0;
+    text-align: left;
+    max-width: 300px;
+    margin: 1.5rem auto;
+}
+
+.step {
+    color: var(--color-muted);
+    font-size: 0.9rem;
+    margin: 0.5rem 0;
+    opacity: 0.3;
+    transition: opacity 0.3s;
+}
+
+.step.active {
+    color: var(--color-accent);
+    opacity: 1;
+}
+
+.step.completed {
+    color: var(--color-accent-2);
+    opacity: 0.7;
+}
+/* === КОНЕЦ НОВОГО === */
+
 .loading-progress {
     width: 100%;
     height: 2px;
@@ -146,6 +193,29 @@ body {
     0%, 100% { width: 0%; transform: translateX(-100%); }
     50% { width: 100%; transform: translateX(0%); }
 }
+
+/* === НОВОЕ: Кнопка пропуска === */
+.skip-button {
+    margin-top: 2rem;
+    background: transparent;
+    border: 1px solid var(--color-border);
+    color: var(--color-muted);
+    padding: 0.5rem 1.5rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.3s;
+    display: none; /* Появится через 5 секунд */
+}
+
+.skip-button.visible {
+    display: inline-block;
+}
+
+.skip-button:hover {
+    border-color: var(--color-accent);
+    color: var(--color-text);
+}
+/* === КОНЕЦ НОВОГО === */
 
 /* 5. ГЛАВНЫЙ КОНТЕЙНЕР */
 .main-container {
@@ -746,6 +816,15 @@ body.transitioning {
         width: 95vw;
         padding: 1.5rem;
     }
+    
+    /* Оптимизация для мобильных */
+    #shaderCanvas {
+        display: none;
+    }
+    
+    .point-aura {
+        animation: none;
+    }
 }
 
 @media (max-width: 480px) {
@@ -859,3 +938,47 @@ body.transitioning {
 .flicker-slow {
     animation-duration: 0.2s !important;
 }
+
+/* === НОВОЕ: Выбор режима загрузки === */
+.mode-selector {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.mode-selector button {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    padding: 1rem;
+    font-family: var(--font-primary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.mode-selector button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+}
+
+.mode-selector button:first-child {
+    background: rgba(255, 0, 255, 0.1);
+    border-color: var(--color-accent);
+}
+
+.mode-selector button:last-child {
+    background: rgba(0, 255, 255, 0.1);
+    border-color: var(--color-accent-2);
+}
+/* === КОНЕЦ НОВОГО === */
+
+/* Кэш-бюст для принудительного обновления */
+/* Версия: 1.0.1 - с оптимизациями */

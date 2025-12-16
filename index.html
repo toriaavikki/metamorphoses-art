@@ -42,15 +42,29 @@
     <canvas id="particleCanvas" aria-hidden="true"></canvas>
     
     <!-- Прогресс бар загрузки -->
-    <div id="loadingScreen" class="loading-screen">
-        <div class="loading-content">
-            <div class="loading-spinner"></div>
-            <div class="loading-text">Инициализация психоделического измерения...</div>
-            <div class="loading-progress">
-                <div class="loading-bar"></div>
-            </div>
+   <div id="loadingScreen" class="loading-screen">
+    <div class="loading-content">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Инициализация психоделического измерения...</div>
+        
+        <!-- Добавьте этот блок -->
+        <div class="loading-steps">
+            <div class="step" data-step="1">Загрузка ядра...</div>
+            <div class="step" data-step="2">Инициализация аудио...</div>
+            <div class="step" data-step="3">Компиляция шейдеров...</div>
+            <div class="step" data-step="4">Подготовка пространства...</div>
         </div>
+        
+        <div class="loading-progress">
+            <div class="loading-bar"></div>
+        </div>
+        
+        <!-- Кнопка пропуска -->
+        <button id="skipLoading" class="skip-button">
+            Пропустить инициализацию
+        </button>
     </div>
+</div>
     
     <!-- Главный контейнер -->
     <main class="main-container" id="mainContent" style="opacity: 0;">
